@@ -1,7 +1,7 @@
 const express = require("express");
 const contacts = require("../../models/contacts");
 const Joi = require("joi");
-const { errorMessage, catchAsync } = require("../../helpers");
+const { errorMessage } = require("../../helpers");
 
 const router = express.Router();
 
@@ -12,13 +12,14 @@ const contactAddSchema = Joi.object({
 });
 
 /* ----------------------------------- GET ---------------------------------- */
-router.get(
-  "/",
-  catchAsync(async (req, res, next) => {
+router.get("/", async (req, res, next) => {
+  try {
     const result = await contacts.listContacts();
-    res.status(200).json(result);
-  })
-);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
 /* -------------------------------- GET BY ID ------------------------------- */
 router.get("/:contactId", async (req, res, next) => {
   try {
@@ -35,10 +36,18 @@ router.post("/", async (req, res, next) => {
   try {
     const { error } = contactAddSchema.validate(req.body);
     if (error) {
-      throw errorMessage({
-        status: 400,
-        message: "missing required name field",
-      });
+      const label = error.details[0].context.label;
+      if (error.details[0].type === "any.required") {
+        throw errorMessage({
+          status: 400,
+          message: `missing required ${label} field`,
+        });
+      } else {
+        throw errorMessage({
+          status: 400,
+          message: `${error.details[0].message}`,
+        });
+      }
     }
     const result = await contacts.addContact(req.body);
     res.status(201).json(result);
@@ -62,7 +71,22 @@ router.put("/:contactId", async (req, res, next) => {
   try {
     const { error } = contactAddSchema.validate(req.body);
     if (error) {
-      throw errorMessage({ status: 400, message: "missing fields" });
+      const length = Object.keys(error._original).length;
+      const label = error.details[0].context.label;
+      if (length === 0) {
+        throw errorMessage({ status: 400, message: "missing fields" });
+      }
+      if (error.details[0].type === "any.required") {
+        throw errorMessage({
+          status: 400,
+          message: `missing required ${label} field`,
+        });
+      } else {
+        throw errorMessage({
+          status: 400,
+          message: `${error.details[0].message}`,
+        });
+      }
     }
     const { contactId } = req.params;
     const result = await contacts.updateContact(contactId, req.body);
