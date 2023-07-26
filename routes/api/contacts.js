@@ -12,14 +12,6 @@ const contactAddSchema = Joi.object({
 });
 
 /* ----------------------------------- GET ---------------------------------- */
-// router.get("/", async (req, res, next) => {
-//   try {
-//     const result = await contacts.listContacts();
-//     res.json(result);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 router.get(
   "/",
   catchAsync(async (req, res, next) => {
@@ -73,7 +65,7 @@ router.put("/:contactId", async (req, res, next) => {
       throw errorMessage({ status: 400, message: "missing fields" });
     }
     const { contactId } = req.params;
-    const result = await contacts.updateContactById(contactId, req.body);
+    const result = await contacts.updateContact(contactId, req.body);
     if (!result) throw errorMessage({ status: 404 });
     res.json(result);
   } catch (error) {
