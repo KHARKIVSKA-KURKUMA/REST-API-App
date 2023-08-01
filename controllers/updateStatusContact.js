@@ -9,9 +9,7 @@ const updateStatusContact = async (req, res) => {
       message: "missing field favourite or wrong data type",
     });
   }
-
   const { contactId } = req.params;
-
   const result = await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
   });
