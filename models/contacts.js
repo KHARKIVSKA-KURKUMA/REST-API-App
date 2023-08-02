@@ -18,7 +18,7 @@ const contactSchema = new Schema(
       type: String,
       required: [true, "Enter phone number"],
     },
-    favourite: {
+    favorite: {
       type: Boolean,
       default: false,
     },
@@ -36,16 +36,16 @@ const contactAddSchema = Joi.object({
     .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
     .required(),
   phone: Joi.string().required(),
-  favourite: Joi.boolean(),
+  favorite: Joi.boolean(),
 });
 
-const updateFavouriteSchema = Joi.object({
-  favourite: Joi.boolean().required(),
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
 });
 
 const schemas = {
   contactAdd: contactAddSchema,
-  updateFavourite: updateFavouriteSchema,
+  updateFavorite: updateFavoriteSchema,
 };
 
 module.exports = {
