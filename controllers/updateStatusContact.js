@@ -4,10 +4,25 @@ const { errorMessage } = require(`../helpers`);
 const updateStatusContact = async (req, res) => {
   const { error } = schemas.updateFavorite.validate(req.body);
   if (error) {
-    throw errorMessage({
-      status: 400,
-      message: "missing field favorite or wrong data type",
-    });
+    const errorPath = error.details[0];
+    if (error) {
+      if (errorPath.type === "any.required") {
+        throw errorMessage({
+          status: 400,
+          message: "missing field favorite",
+        });
+      } else if (errorPath.type === "boolean.base") {
+        throw errorMessage({
+          status: 400,
+          message: "wrong data type",
+        });
+      } else {
+        throw errorMessage({
+          status: 400,
+          message: errorPath.message,
+        });
+      }
+    }
   }
 
   const { contactId } = req.params;
