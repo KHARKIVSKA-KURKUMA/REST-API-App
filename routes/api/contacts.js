@@ -1,23 +1,25 @@
 const express = require("express");
-const controllers = require(`../../controllers/contacts`);
-const { controllersWrap } = require(`../../helpers`);
-const { isValidId } = require("../../middleware");
-
+const { basedir } = global;
+const controllers = require(`${basedir}/controllers/contacts`);
+const { controllersWrap } = require(`${basedir}/helpers`);
+const { auth, isValidId } = require(`${basedir}/middleware`);
 const router = express.Router();
 
-router.get("/", controllersWrap(controllers.getContactsList));
+router.get("/", auth, controllersWrap(controllers.getContactsList));
 
 router.get(
   "/:contactId",
   isValidId,
+  auth,
   controllersWrap(controllers.getContactById)
 );
 
-router.post("/", controllersWrap(controllers.addContact));
+router.post("/", auth, controllersWrap(controllers.addContact));
 
 router.delete(
   "/:contactId",
   isValidId,
+  auth,
   controllersWrap(controllers.removeContact)
 );
 
@@ -26,6 +28,7 @@ router.put("/:contactId", isValidId, controllersWrap(controllers.editContact));
 router.patch(
   "/:contactId/favorite",
   isValidId,
+  auth,
   controllersWrap(controllers.updateStatusContact)
 );
 

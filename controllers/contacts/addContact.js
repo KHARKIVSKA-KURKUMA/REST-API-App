@@ -18,8 +18,23 @@ const addContact = async (req, res) => {
       });
     }
   } else {
-    const result = await Contact.create(req.body);
-    res.status(201).json(result);
+    const { id: owner } = req.user;
+    try {
+      const result = await Contact.create({ ...req.body, owner });
+      res.status(201).json(result);
+    } catch (err) {
+      if (err.code === 11000 && err.keyPattern.email === 1) {
+        throw errorMessage({
+          status: 409,
+          message: `The email '${req.body.email}' already exists. Please use a different email.`,
+        });
+      } else {
+        throw errorMessage({
+          status: 500,
+          message: "An unexpected error occurred while adding the contact.",
+        });
+      }
+    }
   }
 };
 

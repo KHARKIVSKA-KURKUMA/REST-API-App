@@ -18,6 +18,6 @@ router.patch("/:userId/user", controllersWrap(ctrl.updateUserSubscription));
 
 router.get("/current", auth, controllersWrap(ctrl.getCurrent));
 
-router.get("/logout", auth, controllersWrap(ctrl.logout));
+router.post("/logout", auth, controllersWrap(ctrl.logout));
 
 module.exports = router;
