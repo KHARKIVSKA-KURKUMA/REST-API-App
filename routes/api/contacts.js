@@ -1,5 +1,5 @@
 const express = require("express");
-const controllers = require(`../../controllers`);
+const controllers = require(`../../controllers/contacts`);
 const { controllersWrap } = require(`../../helpers`);
 const { isValidId } = require("../../middleware");
 

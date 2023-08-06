@@ -1,5 +1,6 @@
-const { Contact } = require(`../models/contacts`);
-const { errorMessage } = require(`../helpers`);
+const { basedir } = global;
+const { Contact } = require(`${basedir}/models/contacts`);
+const { errorMessage } = require(`${basedir}/helpers`);
 
 const getContactById = async (req, res) => {
   const { contactId } = req.params;

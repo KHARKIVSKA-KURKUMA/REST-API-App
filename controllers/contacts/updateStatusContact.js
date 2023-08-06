@@ -1,5 +1,6 @@
-const { Contact, schemas } = require(`../models/contacts`);
-const { errorMessage } = require(`../helpers`);
+const { basedir } = global;
+const { Contact, schemas } = require(`${basedir}/models/contacts`);
+const { errorMessage } = require(`${basedir}/helpers`);
 
 const updateStatusContact = async (req, res) => {
   const { error } = schemas.updateFavorite.validate(req.body);
