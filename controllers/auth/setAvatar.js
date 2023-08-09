@@ -2,19 +2,17 @@ const path = require("path");
 const fs = require("fs/promises");
 const Jimp = require("jimp");
 const { basedir } = global;
-
 const { User } = require(`${basedir}/models/user`);
-
 const avatarsDir = path.join(basedir, "public", "avatars");
 
 const setAvatar = async (req, res) => {
   try {
     const { _id } = req.user;
-    const { path: tempPath, originalname } = req.file;
+    const { path: tmpPath, originalname } = req.file;
     const [extension] = originalname.split(".").reverse();
     const newName = `${_id}.${extension}`;
     const uploadPath = path.join(avatarsDir, newName);
-    await fs.rename(tempPath, uploadPath);
+    await fs.rename(tmpPath, uploadPath);
     const avatarURL = path.join("avatars", newName);
     const minAvatarURL = path.join("public/avatars", newName);
 
