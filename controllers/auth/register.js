@@ -1,8 +1,13 @@
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
+const { v4: uuid } = require("uuid");
 const { basedir } = global;
 const { User, schemas } = require(`${basedir}/models/user`);
-const { errorMessage } = require(`${basedir}/helpers`);
+const {
+  errorMessage,
+  emailSender,
+  verificationLetter,
+} = require(`${basedir}/helpers`);
 
 const register = async (req, res) => {
   const { error } = schemas.register.validate(req.body);
@@ -27,11 +32,14 @@ const register = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
+  const verificationToken = uuid();
   const result = await User.create({
     ...req.body,
     password: hashPassword,
     avatarURL,
+    verificationToken,
   });
+  await emailSender(verificationLetter(email, verificationToken));
   res.status(201).json({
     user: { email: result.email, subscription: "starter" },
   });
