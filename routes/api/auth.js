@@ -20,6 +20,10 @@ router.get("/current", auth, controllersWrap(ctrl.getCurrent));
 
 router.post("/logout", auth, controllersWrap(ctrl.logout));
 
+router.get("/verify/:verificationToken", controllersWrap(ctrl.verifyEmail));
+
+router.post("/verify", controllersWrap(ctrl.resendVerifyEmail));
+
 router.patch(
   "/avatars",
   auth,
